@@ -1,0 +1,22 @@
+{
+    "author": "Benjamin Prosnitz <bprosnitz@gmail.com>",
+    "name": "consonance",
+    "description": "A music theory library",
+    "version": "0.0.0",
+    "homepage": "https://github.com/bprosnitz/consonance",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/bprosnitz/consonance.git"
+    },
+    "main": "src/consonance.js",
+    "scripts": {
+        "test": "mocha --reporter spec test/*.js"
+    },
+    "engines": {
+        "node": ">= 0.8"
+    },
+    "dependencies": {},
+    "devDependencies": {
+        "mocha": "~1.13"
+    }
+}
