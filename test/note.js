@@ -76,4 +76,12 @@ describe('Note', function() {
             });
         });
     });
+    describe('toString()', function() {
+        it('should output \'A#7\' for note \'A#7\'', function() {
+            expect(consonance.Note('A#7').toString()).to.equal('A#7');
+        });
+        it('should output \'B\' for note \'B\'', function() {
+            expect(consonance.Note('B').toString()).to.equal('B');
+        });
+    });
 });

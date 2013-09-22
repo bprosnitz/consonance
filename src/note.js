@@ -61,9 +61,16 @@ exports.Note = function() {
         index: function() {
             return private.index;
         },
+        from: from,
         equals: function(other) {
             return this.index() == other.index() && this.octave() == other.octave();
         },
-        from: from
+        toString: function() {
+            if (private.octave) {
+                return private.noteName + private.octave;
+            } else {
+                return private.noteName;
+            }
+        }
     };
 };

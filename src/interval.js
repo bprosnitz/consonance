@@ -11,9 +11,9 @@ exports.Interval = function() {
         }
         direction = direction.toLowerCase();
         if (direction == 'asc' || direction == 'ascending') {
-            private.direction = 'ascending';
+            private.direction = constants.direction.ascending;
         } else if (direction == 'desc' || direction == 'descending') {
-            private.direction = 'descending';
+            private.direction = constants.direction.descending;
         } else {
             throw new Error('Unknown direction \'' + direction + '\'');
         }
@@ -40,6 +40,14 @@ exports.Interval = function() {
             perfect: {
                 name: 'perfect',
                 abbrev: 'P'
+            }
+        },
+        direction: {
+            ascending: {
+                name: 'ascending'
+            },
+            descending: {
+                name: 'descending'
             }
         }
     };
@@ -156,11 +164,18 @@ exports.Interval = function() {
             return private.semitones;
         },
         direction: function() {
-            return private.direction;
+            return private.direction.name;
         },
+        from: from,
         equals: function(other) {
             return this.semitones() == other.semitones() && this.direction() == other.direction();
         },
-        from: from
+        toString: function() {
+            if (private.direction == constants.direction.descending) {
+                return private.name + ' ' + private.direction.name;
+            } else {
+                return private.name;
+            }
+        }
     };
 };

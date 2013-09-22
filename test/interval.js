@@ -119,4 +119,12 @@ describe('Interval', function() {
             expect(consonance.Interval('M3').equals(consonance.Interval('M2'))).to.be.false;
         });
     });
+    describe('toString()', function() {
+        it('should output \'M7\' for \'M7 ascending\'', function() {
+            expect(consonance.Interval('M7 ascending').toString()).to.equal('M7');
+        });
+        it('should output \'M7 descending\' for \'M7 descending\'', function() {
+            expect(consonance.Interval('M7 descending').toString()).to.equal('M7 descending');
+        });
+    });
 });
