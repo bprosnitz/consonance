@@ -3,8 +3,52 @@ var consonance = require('../src/consonance').consonance;
 
 describe('Interval', function() {
     describe('Constructors', function() {
+        describe('String constructor', function() {
+            var testStringConstructor = function(string, expectedSemitones, expectedName, expectedDirection) {
+                var interval = consonance.Interval(string);
+                if (expectedName) {
+                    expect(interval.name()).to.equal(expectedName);
+                } else {
+                    expect(interval.name()).to.equal(string);
+                }
+                expect(interval.semitones()).to.equal(expectedSemitones);
+                if (!expectedDirection || expectedDirection == 'ascending') {
+                    expect(interval.direction()).to.equal('ascending');
+                } else if (expectedDirection == 'descending') {
+                    expect(interval.direction()).to.equal('descending');
+                }
+            };
+            it('m7', function() {
+                testStringConstructor('m7', 10);
+            });
+            it('M7', function() {
+                testStringConstructor('M7', 11);
+            });
+            it('P1', function() {
+                testStringConstructor('Perfect 1', 0);
+            });
+            it('P8', function() {
+                testStringConstructor('P8 descending', 12, 'P8', 'descending');
+            });
+            it('M9', function() {
+                testStringConstructor('M9', 14);
+            });
+            it('A4', function() {
+                testStringConstructor('Augmented 4', 6);
+            });
+            it('P2 Throws', function() {
+                expect(function() {
+                    consonance.Interval('P2')
+                }).to.throw();
+            });
+            it('77P Throws', function() {
+                expect(function() {
+                    consonance.Interval('77P')
+                }).to.throw();
+            });
+        });
         describe('Semitone constructor', function() {
-            testSemitoneConstructor = function(semitones, expectedName, direction) {
+            var testSemitoneConstructor = function(semitones, expectedName, direction) {
                 var interval = consonance.Interval(semitones, direction);
                 expect(interval.semitones()).to.equal(semitones);
                 expect(interval.name()).to.equal(expectedName);

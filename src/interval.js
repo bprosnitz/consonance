@@ -19,47 +19,113 @@ exports.Interval = function() {
         }
     };
 
+    var constants = {
+        qualities: {
+            major: {
+                name: 'major',
+                abbrev: 'M'
+            },
+            minor: {
+                name: 'minor',
+                abbrev: 'm'
+            },
+            augmented: {
+                name: 'augmented',
+                abbrev: 'A'
+            },
+            diminished: {
+                name: 'diminished',
+                abbrev: 'D'
+            },
+            perfect: {
+                name: 'perfect',
+                abbrev: 'P'
+            }
+        }
+    };
+
+    constants.intervalOrder = [ { quality: constants.qualities.perfect, intervalNumber: 1 },
+        { quality: constants.qualities.minor, intervalNumber: 2 },
+        { quality: constants.qualities.major, intervalNumber: 2 },
+        { quality: constants.qualities.minor, intervalNumber: 3 },
+        { quality: constants.qualities.major, intervalNumber: 3 },
+        { quality: constants.qualities.perfect, intervalNumber: 4 },
+        { quality: constants.qualities.augmented, intervalNumber: 4 },
+        { quality: constants.qualities.perfect, intervalNumber: 5 },
+        { quality: constants.qualities.minor, intervalNumber: 6 },
+        { quality: constants.qualities.major, intervalNumber: 6 },
+        { quality: constants.qualities.minor, intervalNumber: 7 },
+        { quality: constants.qualities.major, intervalNumber: 7 } ];
+
     var shorthandName = function() {
         var semitones = private.semitones;
+        var intervalInfo = constants.intervalOrder[semitones % 12];
+        var shorthandIntervalNum = intervalInfo.intervalNumber + Math.floor((semitones / 12))*7;
+        return intervalInfo.quality.abbrev + shorthandIntervalNum;
+    };
 
-        baseIntervalNumber = {
-            0: 1,
-            1: 2,
-            2: 2,
-            3: 3,
-            4: 3,
-            5: 4,
-            6: 4,
-            7: 5,
-            8: 6,
-            9: 6,
-            10: 7,
-            11: 7
-        };
-
-        var shorthandIntervalNum = baseIntervalNumber[semitones % 12] + Math.floor((semitones / 12))*7;
-
-        shortNamePrefix = {
-            0: 'P',
-            1: 'm',
-            2: 'M',
-            3: 'm',
-            4: 'M',
-            5: 'P',
-            6: 'A',
-            7: 'P',
-            8: 'm',
-            9: 'M',
-            10: 'm',
-            11: 'M'
-        };
-
-        return shortNamePrefix[semitones % 12] + shorthandIntervalNum;
+    var qualityNameToQuality = function(qualityName) {
+        if (qualityName.length == 1) {
+            for (var qualityKey in constants.qualities) {
+                var quality = constants.qualities[qualityKey];
+                if (quality.abbrev == qualityName) {
+                    return quality;
+                }
+            }
+            if (!private.quality) {
+                for (var qualityKey in constants.qualities) {
+                    var quality = constants.qualities[qualityKey];
+                    if (quality.abbrev.toLowerCase() == qualityName.toLowerCase()) {
+                        return quality;
+                    }
+                }
+            }
+        } else {
+            for (var qualityKey in constants.qualities) {
+                var quality = constants.qualities[qualityKey];
+                if (quality.name.toLowerCase() == qualityName.toLowerCase()) {
+                    return quality;
+                }
+            }
+        }
+        return null;
     };
 
     var from = {
         name: function(name) {
+            var re = /^\s*(([admp]|major|minor|augmented|diminished|perfect)\s*([1-9][0-9]*))\s*(desc|descending|asc|ascending)?$/i;
+            var reMatch = re.exec(name);
+            if (!reMatch) {
+                throw new Error('Invalid interval name structure \'' + name + '\'');
+            }
+            private.name = reMatch[1];
 
+            var inQuality = reMatch[2];
+            var quality = qualityNameToQuality(inQuality);
+            if (!quality) {
+                throw new Error('No quality found named ' + inQuality);
+            }
+
+            var intervalNum = parseInt(reMatch[3]);
+
+            var intervalNumToCheck = (intervalNum - 1) % 7 + 1;
+            for (var i = 0; i < constants.intervalOrder.length; ++i) {
+                var intervalInfo = constants.intervalOrder[i];
+                if (intervalInfo.intervalNumber == intervalNumToCheck && quality == intervalInfo.quality) {
+                    private.semitones = i;
+                    break;
+                }
+            }
+            if (private.semitones === null) {
+                throw new Error('Interval number did not match interval quality');
+            }
+            private.semitones += Math.floor((intervalNum - 1) / 7) * 12;
+
+            var direction = reMatch[4];
+            if (!direction) {
+                direction = 'ASCENDING';
+            }
+            setPrivateDirection(direction);
         },
         semitones: function(semitones, direction) {
             if (typeof semitones !== 'number') {

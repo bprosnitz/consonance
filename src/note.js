@@ -1,4 +1,4 @@
-exports.Note = function(param) {
+exports.Note = function() {
     var private = {
         noteName: null,
         index: null,
@@ -45,8 +45,8 @@ exports.Note = function(param) {
         }
     };
 
-    if (typeof param == 'string') {
-        from.name(param);
+    if (typeof arguments[0] == 'string') {
+        from.name.apply(this, arguments);
     } else {
         throw new Error('Note constructor requires a string name');
     }
