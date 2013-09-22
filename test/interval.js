@@ -108,4 +108,15 @@ describe('Interval', function() {
             });
         });
     });
+    describe('Equals', function() {
+        it('M3 equals M3', function() {
+            expect(consonance.Interval('M3').equals(consonance.Interval('M3'))).to.be.true;
+        });
+        it('M3 doesnt equal m3', function() {
+            expect(consonance.Interval('M3').equals(consonance.Interval('m3'))).to.be.false;
+        });
+        it('M3 doesnt equal M2', function() {
+            expect(consonance.Interval('M3').equals(consonance.Interval('M2'))).to.be.false;
+        });
+    });
 });

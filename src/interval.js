@@ -158,6 +158,9 @@ exports.Interval = function() {
         direction: function() {
             return private.direction;
         },
+        equals: function(other) {
+            return this.semitones() == other.semitones() && this.direction() == other.direction();
+        },
         from: from
     };
 };
