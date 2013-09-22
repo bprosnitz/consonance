@@ -1,5 +1,5 @@
 exports.Note = function() {
-    var private = {
+    var priv = {
         noteName: null,
         index: null,
         octave: null
@@ -21,14 +21,14 @@ exports.Note = function() {
         name: function(name) {
             var re = /^([A-Ga-g][#bB]*)([0-9]*)$/;
             var reResult = re.exec(name);
-            private.noteName = reResult[1];
+            priv.noteName = reResult[1];
             if (reResult[2].length > 0) {
-                private.octave = parseInt(reResult[2]);
+                priv.octave = parseInt(reResult[2]);
             }
 
-            var index = constants.noteIndicies[private.noteName[0].toLowerCase()];
-            for (var i = 1; i < private.noteName.length; ++i) {
-                var char = private.noteName[i];
+            var index = constants.noteIndicies[priv.noteName[0].toLowerCase()];
+            for (var i = 1; i < priv.noteName.length; ++i) {
+                var char = priv.noteName[i];
                 if (char == '#') {
                     ++index
                 } else if (char == 'b' || char == 'B') {
@@ -41,8 +41,53 @@ exports.Note = function() {
             if (index < 0) {
                 index += 12;
             }
-            private.index = index;
+            priv.index = index;
         }
+    };
+
+    var clonedPriv = function() {
+        var newPriv = {};
+        for (var key in priv) {
+            newPriv[key] = priv[key];
+        }
+        return newPriv;
+    };
+
+    var construct = function _construct(priv) {
+        return {
+            noteName: function() {
+                return priv.noteName;
+            },
+            octave: function(value) {
+                if (value !== undefined) {
+                    // setting the value
+                    if (value == null || typeof value == 'number') {
+                        var privateDat = clonedPriv();
+                        privateDat.octave = value;
+                        return _construct(privateDat);
+                    } else {
+                        throw new Error('Invalid value for octave ' + value);
+                    }
+                } else {
+                    // getting the value
+                    return priv.octave;
+                }
+            },
+            index: function() {
+                return priv.index;
+            },
+            from: from,
+            equals: function(other) {
+                return this.index() == other.index() && this.octave() == other.octave();
+            },
+            toString: function() {
+                if (priv.octave) {
+                    return priv.noteName + priv.octave;
+                } else {
+                    return priv.noteName;
+                }
+            }
+        };
     };
 
     if (typeof arguments[0] == 'string') {
@@ -51,26 +96,5 @@ exports.Note = function() {
         throw new Error('Note constructor requires a string name');
     }
 
-    return {
-        noteName: function() {
-            return private.noteName;
-        },
-        octave: function() {
-            return private.octave;
-        },
-        index: function() {
-            return private.index;
-        },
-        from: from,
-        equals: function(other) {
-            return this.index() == other.index() && this.octave() == other.octave();
-        },
-        toString: function() {
-            if (private.octave) {
-                return private.noteName + private.octave;
-            } else {
-                return private.noteName;
-            }
-        }
-    };
+    return construct(priv);
 };

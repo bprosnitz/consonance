@@ -84,4 +84,32 @@ describe('Note', function() {
             expect(consonance.Note('B').toString()).to.equal('B');
         });
     });
+    describe('octave()', function() {
+        it('should return the octave as number with no parameter', function() {
+            expect(consonance.Note('A#7').octave()).to.be.a('number');
+            expect(consonance.Note('A#7').octave()).to.equal(7);
+            expect(consonance.Note('A#').octave()).to.be.null;
+        });
+        it('should return a new object with the desired octave when given a numeric parameter from object with no octave', function() {
+            var note = consonance.Note('A#');
+            var newNote = note.octave(8);
+            expect(newNote.octave()).to.equal(8);
+            expect(newNote.toString()).to.equal('A#8');
+            expect(note.octave()).to.be.null;
+        });
+        it('should return a new object with the desired octave when given a numeric parameter from object with octave', function() {
+            var note = consonance.Note('A#7');
+            var newNote = note.octave(8);
+            expect(newNote.octave()).to.equal(8);
+            expect(newNote.toString()).to.equal('A#8');
+            expect(note.octave()).to.be.equal(7);
+        });
+        it('should return a new object with no octave when given a null parameter from object with octave', function() {
+            var note = consonance.Note('A#7');
+            var newNote = note.octave(null);
+            expect(newNote.octave()).to.be.null;
+            expect(newNote.toString()).to.equal('A#');
+            expect(note.octave()).to.be.equal(7);
+        });
+    });
 });
