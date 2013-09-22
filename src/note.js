@@ -1,3 +1,5 @@
+var Interval = require('../src/interval').Interval;
+
 exports.Note = function() {
     var priv = {
         noteName: null,
@@ -7,28 +9,28 @@ exports.Note = function() {
 
     var constants = {
         noteIndicies: {
-            'c': 0,
-            'd': 2,
-            'e': 4,
-            'f': 5,
-            'g': 7,
-            'a': 9,
-            'b': 11
+            'C': 0,
+            'D': 2,
+            'E': 4,
+            'F': 5,
+            'G': 7,
+            'A': 9,
+            'B': 11
         }
     };
 
-    var from = {
-        name: function(name) {
+    var initializeFrom = {
+        name: function(privateDat, name) {
             var re = /^([A-Ga-g][#bB]*)([0-9]*)$/;
             var reResult = re.exec(name);
-            priv.noteName = reResult[1];
+            privateDat.noteName = reResult[1];
             if (reResult[2].length > 0) {
-                priv.octave = parseInt(reResult[2]);
+                privateDat.octave = parseInt(reResult[2]);
             }
 
-            var index = constants.noteIndicies[priv.noteName[0].toLowerCase()];
-            for (var i = 1; i < priv.noteName.length; ++i) {
-                var char = priv.noteName[i];
+            var index = constants.noteIndicies[privateDat.noteName[0].toUpperCase()];
+            for (var i = 1; i < privateDat.noteName.length; ++i) {
+                var char = privateDat.noteName[i];
                 if (char == '#') {
                     ++index
                 } else if (char == 'b' || char == 'B') {
@@ -41,7 +43,33 @@ exports.Note = function() {
             if (index < 0) {
                 index += 12;
             }
-            priv.index = index;
+            privateDat.index = index;
+        },
+        index: function(privateDat, index, octave) {
+            if (index > 11 || index < 0) {
+                throw new Error('Invalid note index: ' + index);
+            }
+            privateDat.octave = octave;
+            var chosenLetter;
+            var minDistance = 12;
+            for (var noteLetter in constants.noteIndicies) {
+                var noteIndex = constants.noteIndicies[noteLetter];
+                var dist = index - noteIndex;
+                if (dist < 0) {
+                    dist += 12;
+                }
+                if (dist < minDistance) {
+                    minDistance = dist;
+                    chosenLetter = noteLetter;
+                }
+            }
+            if (minDistance == 1) {
+                privateDat.noteName = chosenLetter + '#';
+            } else if (minDistance == 0) {
+                privateDat.noteName = chosenLetter;
+            } else {
+                throw new Error('Unexpected note distance: ' + minDistance);
+            }
         }
     };
 
@@ -76,7 +104,28 @@ exports.Note = function() {
             index: function() {
                 return priv.index;
             },
-            from: from,
+            interval: function() {
+                var interval;
+                if (typeof arguments[0] == 'object') {
+                    interval = arguments[0];
+                } else {
+                    interval = Interval.apply(undefined, arguments);
+                }
+
+                var newPriv = clonedPriv();
+                var index = newPriv.index + interval.delta();
+                var octave;
+                if (newPriv.octave !== null) {
+                    octave = newPriv.octave + Math.floor(index / 12);
+                }
+                var indexMod = index % 12;
+                if (indexMod < 0) {
+                    indexMod += 12;
+                }
+                initializeFrom.index(newPriv, indexMod, octave);
+
+                return _construct(newPriv);
+            },
             equals: function(other) {
                 return this.index() == other.index() && this.octave() == other.octave();
             },
@@ -91,7 +140,7 @@ exports.Note = function() {
     };
 
     if (typeof arguments[0] == 'string') {
-        from.name.apply(this, arguments);
+        initializeFrom.name(priv, arguments[0]);
     } else {
         throw new Error('Note constructor requires a string name');
     }

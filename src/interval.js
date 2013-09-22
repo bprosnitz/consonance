@@ -166,6 +166,13 @@ exports.Interval = function() {
         direction: function() {
             return private.direction.name;
         },
+        delta: function() {
+            var delta = private.semitones;
+            if (private.direction === constants.direction.descending) {
+                delta = -delta;
+            }
+            return delta;
+        },
         from: from,
         equals: function(other) {
             return this.semitones() == other.semitones() && this.direction() == other.direction();

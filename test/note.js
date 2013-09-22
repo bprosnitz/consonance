@@ -112,4 +112,46 @@ describe('Note', function() {
             expect(note.octave()).to.be.equal(7);
         });
     });
+    describe('interval()', function() {
+        it('should create a note offset the correct number of semitones when given an interval', function() {
+            var note = consonance.Note('A5');
+            var interval = consonance.Interval('M2');
+            var newNote = note.interval(interval);
+            expect(newNote.toString()).to.equal('B5');
+        });
+        it('should create a note offset the correct number of semitones when given an interval (no octave)', function() {
+            var note = consonance.Note('C');
+            var interval = consonance.Interval('P4');
+            var newNote = note.interval(interval);
+            expect(newNote.toString()).to.equal('F');
+        });
+        it('should be able to move into the next octave', function() {
+            var note = consonance.Note('B3');
+            var interval = consonance.Interval('m3');
+            var newNote = note.interval(interval);
+            expect(newNote.toString()).to.equal('D4');
+        });
+        it('should be able to use a descending interval', function() {
+            var note = consonance.Note('C#4');
+            var interval = consonance.Interval('M2 descending');
+            var newNote = note.interval(interval);
+            expect(newNote.toString()).to.equal('B3');
+        });
+        it('should be able to use a descending interval (without octave)', function() {
+            var note = consonance.Note('G');
+            var interval = consonance.Interval('M3 descending');
+            var newNote = note.interval(interval);
+            expect(newNote.toString()).to.equal('D#');
+        });
+        it('should be possible to specify an interval by name', function() {
+            var note = consonance.Note('A5');
+            var newNote = note.interval('M2');
+            expect(newNote.toString()).to.equal('B5');
+        });
+        it('should be possible to specify an interval by semitones', function() {
+            var note = consonance.Note('B');
+            var newNote = note.interval(1);
+            expect(newNote.toString()).to.equal('C');
+        });
+    });
 });
