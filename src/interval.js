@@ -1,5 +1,5 @@
 exports.Interval = function() {
-    var private = {
+    var priv = {
         name: null,
         semitones: null,
         direction: null
@@ -11,9 +11,9 @@ exports.Interval = function() {
         }
         direction = direction.toLowerCase();
         if (direction == 'asc' || direction == 'ascending') {
-            private.direction = constants.direction.ascending;
+            priv.direction = constants.direction.ascending;
         } else if (direction == 'desc' || direction == 'descending') {
-            private.direction = constants.direction.descending;
+            priv.direction = constants.direction.descending;
         } else {
             throw new Error('Unknown direction \'' + direction + '\'');
         }
@@ -66,7 +66,7 @@ exports.Interval = function() {
         { quality: constants.qualities.major, intervalNumber: 7 } ];
 
     var shorthandName = function() {
-        var semitones = private.semitones;
+        var semitones = priv.semitones;
         var intervalInfo = constants.intervalOrder[semitones % 12];
         var shorthandIntervalNum = intervalInfo.intervalNumber + Math.floor((semitones / 12))*7;
         return intervalInfo.quality.abbrev + shorthandIntervalNum;
@@ -80,7 +80,7 @@ exports.Interval = function() {
                     return quality;
                 }
             }
-            if (!private.quality) {
+            if (!priv.quality) {
                 for (var qualityKey in constants.qualities) {
                     var quality = constants.qualities[qualityKey];
                     if (quality.abbrev.toLowerCase() == qualityName.toLowerCase()) {
@@ -106,7 +106,7 @@ exports.Interval = function() {
             if (!reMatch) {
                 throw new Error('Invalid interval name structure \'' + name + '\'');
             }
-            private.name = reMatch[1];
+            priv.name = reMatch[1];
 
             var inQuality = reMatch[2];
             var quality = qualityNameToQuality(inQuality);
@@ -120,14 +120,14 @@ exports.Interval = function() {
             for (var i = 0; i < constants.intervalOrder.length; ++i) {
                 var intervalInfo = constants.intervalOrder[i];
                 if (intervalInfo.intervalNumber == intervalNumToCheck && quality == intervalInfo.quality) {
-                    private.semitones = i;
+                    priv.semitones = i;
                     break;
                 }
             }
-            if (private.semitones === null) {
+            if (priv.semitones === null) {
                 throw new Error('Interval number did not match interval quality');
             }
-            private.semitones += Math.floor((intervalNum - 1) / 7) * 12;
+            priv.semitones += Math.floor((intervalNum - 1) / 7) * 12;
 
             var direction = reMatch[4];
             if (!direction) {
@@ -139,12 +139,12 @@ exports.Interval = function() {
             if (typeof semitones !== 'number') {
                 throw new Error('semitones should be a number');
             }
-            private.semitones = semitones;
+            priv.semitones = semitones;
             if (!direction) {
                 direction = 'ASCENDING';
             }
             setPrivateDirection(direction);
-            private.name = shorthandName();
+            priv.name = shorthandName();
         }
     };
 
@@ -158,17 +158,17 @@ exports.Interval = function() {
 
     return {
         name: function() {
-            return private.name;
+            return priv.name;
         },
         semitones: function() {
-            return private.semitones;
+            return priv.semitones;
         },
         direction: function() {
-            return private.direction.name;
+            return priv.direction.name;
         },
         delta: function() {
-            var delta = private.semitones;
-            if (private.direction === constants.direction.descending) {
+            var delta = priv.semitones;
+            if (priv.direction === constants.direction.descending) {
                 delta = -delta;
             }
             return delta;
@@ -178,10 +178,10 @@ exports.Interval = function() {
             return this.semitones() == other.semitones() && this.direction() == other.direction();
         },
         toString: function() {
-            if (private.direction == constants.direction.descending) {
-                return private.name + ' ' + private.direction.name;
+            if (priv.direction == constants.direction.descending) {
+                return priv.name + ' ' + priv.direction.name;
             } else {
-                return private.name;
+                return priv.name;
             }
         }
     };

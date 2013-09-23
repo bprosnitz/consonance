@@ -52,6 +52,16 @@ describe('Note', function() {
                 testConstructorSetsCorrectValues('Gb3', 'Gb', 3);
             });
         });
+        describe('Construct from frequency', function() {
+            it('A4 @ 440hz', function() {
+                expect(consonance.Note(440).toString()).to.equal('A4');
+                expect(consonance.Note.from.frequency(440).toString()).to.equal('A4');
+            });
+            it('A4 @ 430hz w/ 430 tuning', function() {
+                expect(consonance.Note(430, 430).toString()).to.equal('A4');
+                expect(consonance.Note.from.frequency(430, 430).toString()).to.equal('A4');
+            });
+        });
         describe('equal', function() {
             it('A equals A', function() {
                 expect(consonance.Note('A').equals(consonance.Note('A'))).to.be.true;
@@ -152,6 +162,15 @@ describe('Note', function() {
             var note = consonance.Note('B');
             var newNote = note.interval(1);
             expect(newNote.toString()).to.equal('C');
+        });
+    });
+    describe('frequency()', function() {
+        it('A4 is 440 in standard tuning', function() {
+            expect(consonance.Note('a4').frequency()).to.equal(440);
+        });
+        it('A4 is 440 in 430hz tuning', function() {
+            expect(consonance.Note('a4').frequency(430)).to.equal(430);
+            expect(consonance.Note('a4').frequency(consonance.Tuning(430))).to.equal(430);
         });
     });
 });
