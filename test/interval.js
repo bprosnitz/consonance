@@ -48,8 +48,8 @@ describe('Interval', function() {
             });
         });
         describe('Semitone constructor', function() {
-            var testSemitoneConstructor = function(semitones, expectedName, direction) {
-                var interval = consonance.Interval(semitones, direction);
+            var testSemitoneConstructor = function(semitones, expectedName, direction, cents) {
+                var interval = consonance.Interval(semitones, direction, cents);
                 expect(interval.semitones()).to.equal(semitones);
                 expect(interval.name()).to.equal(expectedName);
                 if (!direction || direction == 'ascending') {
@@ -57,12 +57,20 @@ describe('Interval', function() {
                 } else if (direction == 'descending') {
                     expect(interval.direction()).to.equal('descending');
                 }
+                if (cents === undefined) {
+                    expect(interval.cents()).to.equal(0);
+                } else {
+                    expect(interval.cents()).to.equal(cents);
+                }
             };
             it('Unison', function() {
                 testSemitoneConstructor(0, 'P1');
             });
             it('Minor Second', function() {
                 testSemitoneConstructor(1, 'm2');
+            });
+            it('Minor Second plus change', function() {
+                testSemitoneConstructor(1, 'm2', undefined, 42);
             });
             it('Major Second', function() {
                 testSemitoneConstructor(2, 'M2');
@@ -117,6 +125,10 @@ describe('Interval', function() {
         });
         it('M3 doesnt equal M2', function() {
             expect(consonance.Interval('M3').equals(consonance.Interval('M2'))).to.be.false;
+        });
+        it('should consider cents', function() {
+            expect(consonance.Interval(2, undefined, 4).equals(consonance.Interval(2, undefined, 5))).to.be.false;
+            expect(consonance.Interval(2, undefined, 4).equals(consonance.Interval(2, undefined, 4))).to.be.true;
         });
     });
     describe('toString()', function() {

@@ -8,6 +8,7 @@ describe('Note', function() {
             expect(note.noteName()).to.equal(noteName);
             expect(note.octave()).to.equal(octave);
             expect(note.index()).to.be.a('number');
+            expect(note.cents()).to.equal(0);
         };
         describe('without octave set', function() {
             it('A', function() {
@@ -65,6 +66,9 @@ describe('Note', function() {
         describe('equal', function() {
             it('A equals A', function() {
                 expect(consonance.Note('A').equals(consonance.Note('A'))).to.be.true;
+            });
+            it('441 hz not equals 440 hz', function() {
+                expect(consonance.Note(441).equals(consonance.Note(440))).to.be.false;
             });
             it('A not equals A#', function() {
                 expect(consonance.Note('A').equals(consonance.Note('A#'))).to.be.false;
@@ -162,6 +166,11 @@ describe('Note', function() {
             var note = consonance.Note('B');
             var newNote = note.interval(1);
             expect(newNote.toString()).to.equal('C');
+        });
+        it('Should handle cents in the note and interval', function() {
+            var note = consonance.Note.from.index(0, 1, 10);
+            var newNote = note.interval(1, undefined, 5);
+            expect(consonance.Note.from.index(1, 1, 15).equals(newNote)).to.be.true;
         });
     });
     describe('frequency()', function() {

@@ -2,6 +2,7 @@ exports.Interval = function() {
     var priv = {
         name: null,
         semitones: null,
+        cents: null,
         direction: null
     };
 
@@ -128,6 +129,7 @@ exports.Interval = function() {
                 throw new Error('Interval number did not match interval quality');
             }
             priv.semitones += Math.floor((intervalNum - 1) / 7) * 12;
+            priv.cents = 0;
 
             var direction = reMatch[4];
             if (!direction) {
@@ -135,7 +137,7 @@ exports.Interval = function() {
             }
             setPrivateDirection(direction);
         },
-        semitones: function(semitones, direction) {
+        semitones: function(semitones, direction, cents) {
             if (typeof semitones !== 'number') {
                 throw new Error('semitones should be a number');
             }
@@ -145,6 +147,11 @@ exports.Interval = function() {
             }
             setPrivateDirection(direction);
             priv.name = shorthandName();
+            if (cents !== undefined) {
+                priv.cents = cents;
+            } else {
+                priv.cents = 0;
+            }
         }
     };
 
@@ -166,8 +173,11 @@ exports.Interval = function() {
         direction: function() {
             return priv.direction.name;
         },
+        cents: function() {
+            return priv.cents;
+        },
         delta: function() {
-            var delta = priv.semitones;
+            var delta = priv.semitones + priv.cents/100;
             if (priv.direction === constants.direction.descending) {
                 delta = -delta;
             }
@@ -175,7 +185,8 @@ exports.Interval = function() {
         },
         from: from,
         equals: function(other) {
-            return this.semitones() == other.semitones() && this.direction() == other.direction();
+            return this.semitones() == other.semitones() && this.direction() == other.direction()
+                && this.cents() == other.cents();
         },
         toString: function() {
             if (priv.direction == constants.direction.descending) {

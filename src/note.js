@@ -41,11 +41,13 @@ var initializeFrom = {
             index += 12;
         }
         privateDat.index = index;
+        privateDat.cents = 0;
     },
     index: function(privateDat, index, octave, cents) {
         if (index > 11 || index < 0) {
             throw new Error('Invalid note index: ' + index);
         }
+        privateDat.index = index;
         if (octave !== undefined) {
             privateDat.octave = octave;
         } else {
@@ -138,7 +140,9 @@ exports.Note = function() {
                 }
 
                 var newPriv = clonedPriv();
-                var index = newPriv.index + interval.delta();
+                var index = newPriv.index + (newPriv.cents/100) + interval.delta();
+                var cents = Math.floor((index - Math.floor(index)) * 100);
+                index = Math.floor(index);
                 var octave;
                 if (newPriv.octave !== null) {
                     octave = newPriv.octave + Math.floor(index / 12);
@@ -147,7 +151,7 @@ exports.Note = function() {
                 if (indexMod < 0) {
                     indexMod += 12;
                 }
-                initializeFrom.index(newPriv, indexMod, octave);
+                initializeFrom.index(newPriv, indexMod, octave, cents);
 
                 return _construct(newPriv);
             },
@@ -162,7 +166,7 @@ exports.Note = function() {
                 return tuning.frequency(this);
             },
             equals: function(other) {
-                return this.index() == other.index() && this.octave() == other.octave();
+                return this.index() == other.index() && this.octave() == other.octave() && this.cents() == other.cents();
             },
             toString: function() {
                 if (priv.octave) {
