@@ -49,7 +49,7 @@ describe('Interval', function() {
         });
         describe('Semitone constructor', function() {
             var testSemitoneConstructor = function(semitones, expectedName, direction, cents) {
-                var interval = consonance.Interval(semitones, direction, cents);
+                var interval = consonance.Interval.from.semitones(semitones, direction, cents);
                 expect(interval.semitones()).to.equal(semitones);
                 expect(interval.name()).to.equal(expectedName);
                 if (!direction || direction == 'ascending') {
@@ -127,8 +127,10 @@ describe('Interval', function() {
             expect(consonance.Interval('M3').equals(consonance.Interval('M2'))).to.be.false;
         });
         it('should consider cents', function() {
-            expect(consonance.Interval(2, undefined, 4).equals(consonance.Interval(2, undefined, 5))).to.be.false;
-            expect(consonance.Interval(2, undefined, 4).equals(consonance.Interval(2, undefined, 4))).to.be.true;
+            expect(consonance.Interval.from.semitones(2, undefined, 4).
+                equals(consonance.Interval.from.semitones(2, undefined, 5))).to.be.false;
+            expect(consonance.Interval.from.semitones(2, undefined, 4).
+                equals(consonance.Interval.from.semitones(2, undefined, 4))).to.be.true;
         });
     });
     describe('toString()', function() {
@@ -138,5 +140,17 @@ describe('Interval', function() {
         it('should output \'M7 descending\' for \'M7 descending\'', function() {
             expect(consonance.Interval('M7 descending').toString()).to.equal('M7 descending');
         });
+    });
+    describe('minus()', function() {
+        expect(consonance.Interval.from.semitones(2, 'ascending', 5).
+            minus(consonance.Interval.from.semitones(1, 'descending', 2)).equals(
+            consonance.Interval.from.semitones(3, 'ascending', 7)
+        )).to.be.true;
+    });
+    describe('plus()', function() {
+        expect(consonance.Interval.from.semitones(2, 'ascending', 5).
+            plus(consonance.Interval.from.semitones(1, 'descending', 2)).equals(
+                consonance.Interval.from.semitones(1, 'ascending', 3)
+            )).to.be.true;
     });
 });

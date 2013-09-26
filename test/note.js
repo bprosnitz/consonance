@@ -169,7 +169,7 @@ describe('Note', function() {
         });
         it('Should handle cents in the note and interval', function() {
             var note = consonance.Note.from.index(0, 1, 10);
-            var newNote = note.interval(1, undefined, 5);
+            var newNote = note.interval(1.05);
             expect(consonance.Note.from.index(1, 1, 15).equals(newNote)).to.be.true;
         });
     });

@@ -1,9 +1,11 @@
 var note = require('./note');
 var interval = require('./interval');
 var tuning = require('./tuning');
+var scale = require('./scale');
 
 exports.consonance = {
     Note: note.Note,
     Interval: interval.Interval,
-    Tuning: tuning.Tuning
+    Tuning: tuning.Tuning,
+    Scale: scale.Scale
 };
