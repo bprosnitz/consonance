@@ -1,4 +1,5 @@
 var Interval = require('../src/interval').Interval;
+var Scale = require('../src/scale').Scale;
 
 exports.TuningConstructorHolder = {};
 
@@ -139,21 +140,35 @@ exports.Note = function() {
                     interval = Interval.apply(undefined, arguments);
                 }
 
-                var newPriv = clonedPriv();
-                var index = newPriv.index + (newPriv.cents/100) + interval.delta();
+                var index = priv.index + (priv.cents/100) + interval.delta();
                 var cents = Math.floor((index - Math.floor(index)) * 100);
                 index = Math.floor(index);
                 var octave;
-                if (newPriv.octave !== null) {
-                    octave = newPriv.octave + Math.floor(index / 12);
+                if (priv.octave !== null) {
+                    octave = priv.octave + Math.floor(index / 12);
                 }
                 var indexMod = index % 12;
                 if (indexMod < 0) {
                     indexMod += 12;
                 }
-                initializeFrom.index(newPriv, indexMod, octave, cents);
 
-                return _construct(newPriv);
+                return exports.Note.from.index(indexMod, octave, cents);
+            },
+            scale: function() {
+                var scale;
+                if (typeof arguments[0] == 'object') {
+                    scale = arguments[0];
+                } else {
+                    scale = Scale.apply(undefined, arguments);
+                }
+
+                var notes = [];
+                for (var i = 0; i < scale.size(); ++i) {
+                    var scaleNote = this.interval(scale.interval(i));
+                    var strippedScaleNote = scaleNote.octave(null);
+                    notes.push(strippedScaleNote);
+                }
+                return notes;
             },
             frequency: function(param) {
                 var tuning;
