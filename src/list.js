@@ -34,6 +34,13 @@ exports.List = function(origItems) {
         },
         asArray: function() {
             return copyArray(items);
+        },
+        map: function(func) {
+            var outArray = [];
+            for (var i in items) {
+                outArray.push(func(items[i]));
+            }
+            return exports.List(outArray);
         }
     };
 };

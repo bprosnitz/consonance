@@ -1,5 +1,6 @@
 var Interval = require('../src/interval').Interval;
 var Scale = require('../src/scale').Scale;
+var List = require('../src/list').List;
 
 exports.TuningConstructorHolder = {};
 
@@ -168,7 +169,7 @@ exports.Note = function() {
                     var strippedScaleNote = scaleNote.octave(null);
                     notes.push(strippedScaleNote);
                 }
-                return notes;
+                return List(notes);
             },
             frequency: function(param) {
                 var tuning;

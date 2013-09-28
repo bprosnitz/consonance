@@ -41,6 +41,12 @@ describe('List', function() {
             expect(list.equals(consonance.List([0, 2, 4]))).to.be.true;
         });
     });
+    describe('map()', function() {
+        it('should work with simple function', function() {
+            expect(consonance.List([0, 2, 4]).map(function(x) { return x + 1; }).
+                equals(consonance.List([1, 3, 5]))).to.be.true;
+        });
+    });
     it('should not change if initial list changes', function() {
         var initialList = [1, 2, 3];
         var list = consonance.List(initialList);

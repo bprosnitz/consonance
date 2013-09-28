@@ -186,12 +186,12 @@ describe('Note', function() {
         it('C major scale', function() {
             expect(consonance.Note('C').scale('major').map(function(note) {
                 return note.noteName();
-            })).to.eql(['C', 'D', 'E', 'F', 'G', 'A', 'B']);
+            }).asArray()).to.eql(['C', 'D', 'E', 'F', 'G', 'A', 'B']);
         });
         it('G minor pentatonic scale', function() {
             expect(consonance.Note('G').scale('minor pentatonic').map(function(note) {
                 return note.noteName();
-            })).to.eql(['G', 'A#', 'C', 'D', 'F']);
+            }).asArray()).to.eql(['G', 'A#', 'C', 'D', 'F']);
         });
     });
 });
