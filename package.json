@@ -18,6 +18,7 @@
     "dependencies": {},
     "devDependencies": {
         "chai": "*",
-        "mocha": "~1.13"
+        "mocha": "~1.13",
+    	"pegjs": "*"
     }
 }
