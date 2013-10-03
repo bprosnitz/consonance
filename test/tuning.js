@@ -1,5 +1,5 @@
 var expect = require('chai').expect;
-var consonance = require('../src/consonance').consonance;
+var consonance = require('../target/consonance').consonance;
 
 describe('Tuning', function() {
     describe('Constructors', function() {

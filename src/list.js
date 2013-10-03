@@ -1,4 +1,5 @@
-exports.List = function(origItems) {
+(function() {
+List = function(origItems) {
     var copyArray = function(origArray) {
         var copy = [];
         for (var i in origArray) {
@@ -40,7 +41,7 @@ exports.List = function(origItems) {
             for (var i in items) {
                 outArray.push(func(items[i]));
             }
-            return exports.List(outArray);
+            return List(outArray);
         },
         mapMemberOp: function(opName/*, args...*/) {
             var args = undefined;
@@ -56,3 +57,4 @@ exports.List = function(origItems) {
         }
     };
 };
+})();

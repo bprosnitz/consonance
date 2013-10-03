@@ -1,7 +1,4 @@
-var Interval = require('../src/interval').Interval;
-var Note = require('../src/note').Note;
-var List = require('../src/list').List;
-
+(function() {
 var peg = require('pegjs');
 var chordGrammar = '\
 start = chord  \
@@ -67,7 +64,7 @@ var initializeFrom = {
     }
 }
 
-exports.Chord = function() {
+Chord = function() {
     var priv = {
         name: null,
         rootNote: null,
@@ -95,10 +92,11 @@ exports.Chord = function() {
     };
 };
 
-exports.Chord.from = {
+Chord.from = {
     name: function(name) {
         var privateDat = {};
         initializeFrom.name(privateDat, name);
-        return exports.Chord(privateDat);
+        return Chord(privateDat);
     }
 };
+})();

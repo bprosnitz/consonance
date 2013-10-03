@@ -1,9 +1,6 @@
-var Interval = require('../src/interval').Interval;
-var Scale = require('../src/scale').Scale;
-var List = require('../src/list').List;
+TuningConstructorHolder = {};
 
-exports.TuningConstructorHolder = {};
-
+(function() {
 var constants = {
     noteIndicies: {
         'C': 0,
@@ -83,7 +80,7 @@ var initializeFrom = {
     },
     frequency: function(privateData, frequency, tuning) {
         if (typeof tuning != 'object') {
-            tuning = exports.TuningConstructorHolder.Tuning(tuning);
+            tuning = TuningConstructorHolder.Tuning(tuning);
         }
 
         var details = tuning.index(frequency);
@@ -91,7 +88,7 @@ var initializeFrom = {
     }
 };
 
-exports.Note = function() {
+Note = function() {
     var priv = {
         noteName: null,
         index: null,
@@ -153,7 +150,7 @@ exports.Note = function() {
                     indexMod += 12;
                 }
 
-                return exports.Note.from.index(indexMod, octave, cents);
+                return Note.from.index(indexMod, octave, cents);
             },
             scale: function() {
                 var scale;
@@ -174,7 +171,7 @@ exports.Note = function() {
                 if (typeof param == 'object') {
                     tuning = param;
                 } else {
-                    tuning = exports.TuningConstructorHolder.Tuning(param);
+                    tuning = TuningConstructorHolder.Tuning(param);
                 }
 
                 return tuning.frequency(this);
@@ -209,20 +206,21 @@ exports.Note = function() {
     return construct(priv);
 };
 
-exports.Note.from = {
+Note.from = {
     name: function(name) {
         var privateDat = {};
         initializeFrom.name(privateDat, name);
-        return exports.Note(privateDat);
+        return Note(privateDat);
     },
     index: function(index, octave, cents) {
         var privateDat = {};
         initializeFrom.index(privateDat, index, octave, cents);
-        return exports.Note(privateDat);
+        return Note(privateDat);
     },
     frequency: function(frequency, tuning) {
         var privateDat = {};
         initializeFrom.frequency(privateDat, frequency, tuning);
-        return exports.Note(privateDat);
+        return Note(privateDat);
     }
 };
+})();

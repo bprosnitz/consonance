@@ -1,4 +1,4 @@
-
+(function() {
 var parseDirectionSign = function(direction) {
     if (typeof direction !== 'string') {
         throw new Error('Direction must be a string');
@@ -153,7 +153,7 @@ var initializeFrom = {
     }
 };
 
-exports.Interval = function() {
+Interval = function() {
     var priv = {
         name: null,
         delta: null
@@ -194,11 +194,11 @@ exports.Interval = function() {
         },
         minus: function(otherInterval) {
             var net = this.delta() - otherInterval.delta();
-            return exports.Interval.from.delta(net);
+            return Interval.from.delta(net);
         },
         plus: function(otherInterval) {
             var net = this.delta() + otherInterval.delta();
-            return exports.Interval.from.delta(net);
+            return Interval.from.delta(net);
         },
         equals: function(other) {
             return this.semitones() == other.semitones() && this.direction() == other.direction()
@@ -214,20 +214,21 @@ exports.Interval = function() {
     };
 };
 
-exports.Interval.from = {
+Interval.from = {
     name: function(name) {
         var privateDat = {};
         initializeFrom.name(privateDat, name);
-        return exports.Interval(privateDat);
+        return Interval(privateDat);
     },
     delta: function(delta) {
         var privateDat = {};
         initializeFrom.delta(privateDat, delta);
-        return exports.Interval(privateDat);
+        return Interval(privateDat);
     },
     semitones: function(index, direction, cents) {
        var privateDat = {};
        initializeFrom.semitones(privateDat, index, direction, cents);
-       return exports.Interval(privateDat);
+       return Interval(privateDat);
     }
 };
+})();

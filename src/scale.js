@@ -1,7 +1,4 @@
-var Interval = require('../src/interval').Interval;
-var Note = require('../src/note').Note;
-var List = require('../src/list').List;
-
+(function() {
 var scaleNames = {
     'major': {
         intervals: ['P1', 'M2', 'M3', 'P4', 'P5', 'M6', 'M7']
@@ -38,7 +35,7 @@ var initializeFrom = {
     }
 };
 
-exports.Scale = function(param) {
+Scale = function(param) {
     var priv = {
         intervals: null
     };
@@ -62,10 +59,11 @@ exports.Scale = function(param) {
     return construct(priv);
 };
 
-exports.Scale.from = {
+Scale.from = {
     name: function(name) {
         var privateDat = {};
         initializeFrom.name(privateDat, name);
-        return exports.Scale(privateDat);
+        return Scale(privateDat);
     }
 };
+})();

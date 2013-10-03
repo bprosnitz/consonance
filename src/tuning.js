@@ -1,6 +1,5 @@
-var Note = require('../src/note').Note;
-
-exports.Tuning = function(A4freq) {
+(function() {
+Tuning = function(A4freq) {
     var priv = {
         A4freq: null
     };
@@ -49,5 +48,6 @@ exports.Tuning = function(A4freq) {
         }
     };
 };
+})();
 
-require('../src/note').TuningConstructorHolder.Tuning = exports.Tuning;
+TuningConstructorHolder.Tuning = Tuning;
