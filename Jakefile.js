@@ -1,6 +1,8 @@
 jakeutils = require('jake-utils');
 desc("Concatenates all source files into library");
-task('default', function(){
+directory('target');
+task('default', ['target'], function(){
+    directory('target');
     var result = concat({
         src: [
             './src/header.js',
