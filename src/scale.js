@@ -1,5 +1,6 @@
 var Interval = require('../src/interval').Interval;
 var Note = require('../src/note').Note;
+var List = require('../src/list').List;
 
 var scaleNames = {
     'major': {
@@ -44,11 +45,8 @@ exports.Scale = function(param) {
 
     var construct = function _construct(priv) {
         return {
-            interval: function(index) {
-                return priv.intervals[index];
-            },
-            size: function() {
-                return priv.intervals.length;
+            intervals: function(index) {
+                return List(priv.intervals);
             }
         }
     };

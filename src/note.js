@@ -163,13 +163,11 @@ exports.Note = function() {
                     scale = Scale.apply(undefined, arguments);
                 }
 
-                var notes = [];
-                for (var i = 0; i < scale.size(); ++i) {
-                    var scaleNote = this.interval(scale.interval(i));
-                    var strippedScaleNote = scaleNote.octave(null);
-                    notes.push(strippedScaleNote);
-                }
-                return List(notes);
+                var self = this;
+                return scale.intervals().map(function(interval) {
+                    var scaleNote = self.interval(interval);
+                    return scaleNote.octave(null);
+                });
             },
             frequency: function(param) {
                 var tuning;

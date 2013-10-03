@@ -1,5 +1,6 @@
 var Interval = require('../src/interval').Interval;
 var Note = require('../src/note').Note;
+var List = require('../src/list').List;
 
 var peg = require('pegjs');
 var chordGrammar = '\
@@ -23,13 +24,54 @@ var initializeFrom = {
         var parsed = chordParser.parse(name);
         console.log(parsed)
         priv.rootNote = Note.from.name(parsed.note);
+
+        var intervals;
+        var seventhType;
+        var chordQuality = parsed.chordquality;
+        if (chordQuality.coreQuality == '' ||
+            chordQuality.coreQuality == 'M' ||
+            chordQuality.coreQuality.toLowerCase() == 'maj' ||
+            chordQuality.coreQuality.toLowerCase() == 'major') {
+            intervals = [ 'P1', 'M3', 'P5'];
+            if (chordQuality.coreQuality == '') {
+                // dominant 7th
+                seventhType = 'M7';
+            } else {
+                seventhType = 'M7';
+            }
+        } else if (chordQuality.coreQuality == 'm' ||
+            chordQuality.coreQuality.toLowerCase() == 'minor') {
+            intervals = [ 'P1', 'm3', 'P5'];
+            seventhType = 'm7';
+        } else if (chordQuality.coreQuality.toLowerCase() == 'aug' ||
+            chordQuality.coreQuality.toLowerCase() == 'augmented') {
+            intervals = [ 'P1', 'M3', 'm6'];
+            seventhType = 'm7';
+        } else if (chordQuality.coreQuality.toLowerCase() == 'dim' ||
+            chordQuality.coreQuality.toLowerCase() == 'diminished') {
+            intervals = [ 'P1', 'm3', 'a4'];
+            seventhType = 'M6';
+        } else if (chordQuality.coreQuality.toLowerCase() == 'sus' ||
+            chordQuality.coreQuality.toLowerCase() == 'suspended') {
+        } else {
+            throw new Error('Unknown core quality "' + chordQuality.coreQuality + '"');
+        }
+
+        if (chordQuality.modifier == 7) {
+            intervals.push(seventhType);
+        }
+
+        priv.intervals = intervals.map(function(intervalName) {
+            return Interval(intervalName)
+        });
     }
 }
 
 exports.Chord = function() {
     var priv = {
         name: null,
-        rootNote: null
+        rootNote: null,
+        intervals: null
     };
 
     if (typeof arguments[0] == 'object') {
@@ -46,9 +88,12 @@ exports.Chord = function() {
         },
         rootNote: function() {
             return priv.rootNote;
+        },
+        intervals: function() {
+            return List(priv.intervals);
         }
     };
-}
+};
 
 exports.Chord.from = {
     name: function(name) {
@@ -56,4 +101,4 @@ exports.Chord.from = {
         initializeFrom.name(privateDat, name);
         return exports.Chord(privateDat);
     }
-}
+};
