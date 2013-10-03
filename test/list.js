@@ -47,6 +47,18 @@ describe('List', function() {
                 equals(consonance.List([1, 3, 5]))).to.be.true;
         });
     });
+    describe('mapMemberOp()', function() {
+        it('Should handle functions with no parameters', function() {
+            var list = consonance.List([consonance.Note('A'), consonance.Note('B')]);
+            expect(list.mapMemberOp('noteName').equals(consonance.List(['A', 'B']))).to.be.true;
+        });
+        it('Should handle functions with some parameters', function() {
+            var list = consonance.Chord('C').intervals();
+            var interval = consonance.Interval('m2');
+            var smallerIntervals = list.mapMemberOp('minus', interval)
+            expect(smallerIntervals.size()).to.equal(3);
+        });
+    });
     it('should not change if initial list changes', function() {
         var initialList = [1, 2, 3];
         var list = consonance.List(initialList);

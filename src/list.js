@@ -41,6 +41,18 @@ exports.List = function(origItems) {
                 outArray.push(func(items[i]));
             }
             return exports.List(outArray);
+        },
+        mapMemberOp: function(opName/*, args...*/) {
+            var args = undefined;
+            if (arguments.length > 1) {
+                args = [];
+                for (var i = 1; i < arguments.length; ++i) {
+                    args.push(arguments[i]);
+                }
+            }
+            return this.map(function(item) {
+                return item[opName].apply(item, args);
+            });
         }
     };
 };
